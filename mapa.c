@@ -59,7 +59,7 @@ int ehParede(MAPA*a m, int x, int y){
 int podeAndar(MAPA* m, int x, int y) {
     return  
         ehValida(m, x, y) &&
-        ehVazia(m, x, y);
+        ehVazia(m, x, y)
 }
 
 void liberaMapa(MAPA* m){
