@@ -31,16 +31,16 @@ void move(char direcao){
 
     switch (direcao)
     {
-        case 'a':
+        case ESQUERDA:
             proximoy--;
             break;
-        case 'w':
+        case CIMA:
             proximox--;
             break;
-        case 's':
+        case BAIXO:
             proximox++;
             break;
-        case 'd':
+        case DIREITA:
             proximoy++;
             break;
     };
@@ -60,7 +60,7 @@ void move(char direcao){
 int main(){
 
     leMapa(&m);
-    encontraMapa(&m, &heroi, '@');
+    encontraMapa(&m, &heroi, HEROI);
     
     do{
         imprimeMapa(&m);

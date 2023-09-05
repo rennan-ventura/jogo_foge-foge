@@ -1,3 +1,9 @@
+#define HEROI '@'
+#define FANTASMA 'F'
+#define VAZIO '.'
+#define PAREDE_VERTICAL '|'
+#define PAREDE_HORIZONTAL '-'
+
 
 struct  mapa{
     char** matriz;
