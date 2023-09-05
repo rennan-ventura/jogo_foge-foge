@@ -6,3 +6,5 @@
 void move(char direcao);
 int acabou();
 int ehDirecao(char direcao);
+void fantasmas();
+int praOndeFantasmaVai(int xatual, int yatual, int* xdestino, int* ydestino);
