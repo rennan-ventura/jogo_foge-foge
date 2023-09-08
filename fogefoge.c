@@ -3,10 +3,12 @@
 #include <time.h>
 #include "fogefoge.h"
 #include "mapa.h"
+#include "ui.h"
 
 
 MAPA m;
 POSICAO heroi;
+int tempilula = 0;
 
 int praOndeFantasmaVai(int xatual, int yatual, int* xdestino, int* ydestino){
 
@@ -21,7 +23,7 @@ int praOndeFantasmaVai(int xatual, int yatual, int* xdestino, int* ydestino){
     for(int i = 0; i < 10; i++){
         int posicao = rand() % 4;
 
-        if(podeAndar(&m, opcoes[posicao][0], opcoes[posicao][1])) {
+        if(podeAndar(&m, FANTASMA, opcoes[posicao][0], opcoes[posicao][1])) {
             *xdestino = opcoes[posicao][0];
             *ydestino = opcoes[posicao][1];
 
@@ -59,15 +61,18 @@ void fantasmas(){
 
 int acabou() {
     POSICAO pos;
-    int fogefogeNoMapa = encontraMapa(&m, &pos, HEROI);
-    return !fogefogeNoMapa;
+
+    int perdeu = !encontraMapa(&m, &pos, HEROI);
+	int ganhou = !encontraMapa(&m, &pos, FANTASMA);
+
+	return ganhou || perdeu;
 }
 
 int ehDirecao(char direcao){
-    direcao == 'a' ||
-       direcao == 'w' ||
-       direcao == 's' ||
-       direcao == 'd';
+    direcao == ESQUERDA ||
+       direcao == CIMA ||
+       direcao == BAIXO ||
+       direcao == DIREITA;
 }
 
 void move(char direcao){
@@ -94,8 +99,12 @@ void move(char direcao){
             break;
     };
 
-    if(!podeAndar(&m, proximox, proximoy))
+    if(!podeAndar(&m, HEROI, proximox, proximoy))
         return;
+    
+    if(ehPersonagem(&m, PILULA, proximox, proximoy)){
+        tempilula = 1;
+    }
     
     andaNoMapa(&m, heroi.x, heroi.y, proximox, proximoy);
     heroi.x = proximox;
@@ -104,21 +113,49 @@ void move(char direcao){
 
 }
 
+void explodePilula(){
+
+    if(!tempilula) return;
+
+    explodePilula2(heroi.x, heroi.y, 0, 1, 3);
+    explodePilula2(heroi.x, heroi.y, 0, -1, 3);
+    explodePilula2(heroi.x, heroi.y, 1, 0, 3);
+    explodePilula2(heroi.x, heroi.y, -1, 0, 3);
+
+    tempilula = 0;
+}
+
+void explodePilula2(int x, int y, int somax, int somay, int qtd){
+
+    if(qtd == 0) return;
+
+    int novox = x + somax;
+    int novoy = y + somay;
+
+
+    if(!ehValida(&m, novox, novoy)) return;
+    if(ehParede(&m, novox, novoy)) return;
+
+    m.matriz[novox][novoy] = VAZIO;
+    explodePilula2(novox, novoy, somax, somay, qtd - 1);
+ 
+}
+
 int main(){
 
     leMapa(&m);
     encontraMapa(&m, &heroi, HEROI);
     
     do{
+        printf("tem pilula: %s\n", (tempilula ? "SIM" : "NAO"));
         imprimeMapa(&m);
 
         char comando;
         scanf(" %c", &comando);
         move(comando);
+        if(comando == BOMBA) explodePilula();
+
         fantasmas();
-
-
-
 
     }while(!acabou());
 
