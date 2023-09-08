@@ -42,3 +42,5 @@ void copiaMapa(MAPA* destino, MAPA* origem);
 int podeAndar(MAPA* m, char personagem, int x, int y);
 
 #endif
+
+//pronto
